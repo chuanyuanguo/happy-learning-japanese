@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>快樂學日文</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-top">
+        <h1>快樂學日文</h1>
+        <div class="header-btns">
+          <button id="settings-toggle" class="btn btn-icon">⚙️</button>
+          <button id="show-history-btn" class="btn btn-icon">📋</button>
+        </div>
+      </div>
+      <p class="subtitle">AI 為你產生日本語文練習</p>
+    </header>
+    <main>
+      <div id="settings-panel" class="card hidden">
+        <h2>練習設定</h2>
+        <div class="setting-row">
+          <label>主題</label>
+          <select id="topic-select"></select>
+        </div>
+        <div class="setting-row">
+          <label>或自訂主題</label>
+          <input type="text" id="custom-topic" placeholder="輸入自訂主題...">
+        </div>
+        <div class="setting-row">
+          <label>句數</label>
+          <select id="count-select">
+            <option value="1">1 句</option>
+            <option value="3">3 句</option>
+            <option value="5" selected>5 句</option>
+            <option value="10">10 句</option>
+            <option value="15">15 句</option>
+            <option value="20">20 句</option>
+          </select>
+        </div>
+        <button id="generate-btn" class="btn btn-primary" style="width:100%">✨ 產生新內容</button>
+      </div>
+      <div id="history-area" class="card hidden">
+        <h2>練習歷史</h2>
+        <p id="total-done" class="hint"></p>
+        <div id="history-list"></div>
+        <p class="hint" style="margin-top:10px">點擊項目可重新載入該次練習</p>
+      </div>
+      <div id="result-area" class="hidden">
+        <section id="day-info">
+          <span id="day-badge"></span>
+          <span id="theme"></span>
+        </section>
+        <section id="listen-section" class="card">
+          <h2>聽力練習</h2>
+          <div class="sentence-box">
+            <p id="sentence" class="sentence-text">按下「✨ 產生新內容」開始</p>
+            <p id="translation" class="translation hidden"></p>
+            <p id="grammar-tip" class="grammar-tip"></p>
+          </div>
+          <div class="sentence-nav" id="sentence-nav"></div>
+          <div class="sentence-controls">
+            <button id="prev-sentence" class="btn btn-small">◀</button>
+            <span id="sentence-counter"></span>
+            <button id="next-sentence" class="btn btn-small">▶</button>
+          </div>
+          <div class="btn-group">
+            <button id="play-btn" class="btn btn-primary">▶ 播放句子</button>
+            <button id="toggle-trans-btn" class="btn btn-secondary">顯示中文</button>
+          </div>
+          <p id="stats" class="hint" style="margin-top:10px"></p>
+          <div id="practice-buttons" class="btn-group" style="margin-top:10px"></div>
+          <p id="practice-status"></p>
+        </section>
+        <section id="speak-section" class="card">
+          <h2>口說練習</h2>
+          <p class="hint">按下按鈕，跟著唸出上面的句子</p>
+          <button id="speak-btn" class="btn btn-primary">🎤 開始錄音</button>
+          <div id="recognition-result" class="result-box hidden">
+            <p class="label">你的發音：</p>
+            <p id="user-speech" class="user-speech"></p>
+            <p id="match-result"></p>
+          </div>
+        </section>
+        <section id="vocab-section" class="card">
+          <h2>單字</h2>
+          <div id="vocab-list"></div>
+        </section>
+      </div>
+    </main>
+    <footer>
+      <p>快樂學日文 &copy; 2026</p>
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

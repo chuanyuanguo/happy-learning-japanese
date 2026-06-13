@@ -1,0 +1,261 @@
+{
+  "days": [
+    {
+      "day": 1,
+      "sentence": "おはようございます。今日はいい天気ですね。",
+      "translation": "早安。今天天氣真好呢。",
+      "vocabulary": [
+        { "word": "おはようございます", "meaning": "早安（敬語）" },
+        { "word": "天気", "meaning": "天氣" }
+      ]
+    },
+    {
+      "day": 2,
+      "sentence": "すみません、駅はどこですか？",
+      "translation": "不好意思，車站在哪裡？",
+      "vocabulary": [
+        { "word": "すみません", "meaning": "不好意思、抱歉" },
+        { "word": "駅", "meaning": "車站" }
+      ]
+    },
+    {
+      "day": 3,
+      "sentence": "これはいくらですか？",
+      "translation": "這個多少錢？",
+      "vocabulary": [
+        { "word": "これ", "meaning": "這個" },
+        { "word": "いくら", "meaning": "多少錢" }
+      ]
+    },
+    {
+      "day": 4,
+      "sentence": "いただきます！",
+      "translation": "我要開動了！",
+      "vocabulary": [
+        { "word": "いただきます", "meaning": "開動了（用餐前用語）" }
+      ]
+    },
+    {
+      "day": 5,
+      "sentence": "私は日本語を勉強しています。",
+      "translation": "我正在學日文。",
+      "vocabulary": [
+        { "word": "勉強", "meaning": "學習" },
+        { "word": "日本語", "meaning": "日語" }
+      ]
+    },
+    {
+      "day": 6,
+      "sentence": "お名前は何ですか？",
+      "translation": "請問您叫什麼名字？",
+      "vocabulary": [
+        { "word": "お名前", "meaning": "名字（敬語）" },
+        { "word": "何", "meaning": "什麼" }
+      ]
+    },
+    {
+      "day": 7,
+      "sentence": "また明日会いましょう。",
+      "translation": "明天見。",
+      "vocabulary": [
+        { "word": "また", "meaning": "再次" },
+        { "word": "明日", "meaning": "明天" }
+      ]
+    },
+    {
+      "day": 8,
+      "sentence": "ちょっと待ってください。",
+      "translation": "請稍等一下。",
+      "vocabulary": [
+        { "word": "ちょっと", "meaning": "一點、稍微" },
+        { "word": "待って", "meaning": "等待" }
+      ]
+    },
+    {
+      "day": 9,
+      "sentence": "お誕生日おめでとうございます！",
+      "translation": "生日快樂！",
+      "vocabulary": [
+        { "word": "お誕生日", "meaning": "生日" },
+        { "word": "おめでとう", "meaning": "恭喜" }
+      ]
+    },
+    {
+      "day": 10,
+      "sentence": "映画を見るのが好きです。",
+      "translation": "我喜歡看電影。",
+      "vocabulary": [
+        { "word": "映画", "meaning": "電影" },
+        { "word": "好き", "meaning": "喜歡" }
+      ]
+    },
+    {
+      "day": 11,
+      "sentence": "今日は何曜日ですか？",
+      "translation": "今天是星期幾？",
+      "vocabulary": [
+        { "word": "今日", "meaning": "今天" },
+        { "word": "曜日", "meaning": "星期" }
+      ]
+    },
+    {
+      "day": 12,
+      "sentence": "お元気ですか？",
+      "translation": "你好嗎？",
+      "vocabulary": [
+        { "word": "元気", "meaning": "精神、活力" }
+      ]
+    },
+    {
+      "day": 13,
+      "sentence": "これをください。",
+      "translation": "請給我這個。",
+      "vocabulary": [
+        { "word": "ください", "meaning": "請給我" }
+      ]
+    },
+    {
+      "day": 14,
+      "sentence": "お願いします。",
+      "translation": "麻煩您了。",
+      "vocabulary": [
+        { "word": "お願い", "meaning": "拜託、請求" }
+      ]
+    },
+    {
+      "day": 15,
+      "sentence": "大丈夫ですか？",
+      "translation": "沒關係嗎？還好嗎？",
+      "vocabulary": [
+        { "word": "大丈夫", "meaning": "沒問題、沒關係" }
+      ]
+    },
+    {
+      "day": 16,
+      "sentence": "さようなら、また会いましょう。",
+      "translation": "再見，後會有期。",
+      "vocabulary": [
+        { "word": "さようなら", "meaning": "再見" },
+        { "word": "会いましょう", "meaning": "見面吧" }
+      ]
+    },
+    {
+      "day": 17,
+      "sentence": "これは美味しいですね。",
+      "translation": "這個很好吃呢。",
+      "vocabulary": [
+        { "word": "美味しい", "meaning": "好吃的" },
+        { "word": "ですね", "meaning": "呢（確認語氣）" }
+      ]
+    },
+    {
+      "day": 18,
+      "sentence": "すごいですね！",
+      "translation": "好厲害！",
+      "vocabulary": [
+        { "word": "すごい", "meaning": "厲害的、了不起的" }
+      ]
+    },
+    {
+      "day": 19,
+      "sentence": "何時ですか？",
+      "translation": "幾點了？",
+      "vocabulary": [
+        { "word": "何時", "meaning": "幾點" }
+      ]
+    },
+    {
+      "day": 20,
+      "sentence": "お疲れ様です。",
+      "translation": "辛苦了。",
+      "vocabulary": [
+        { "word": "お疲れ様", "meaning": "辛苦了（打招呼用語）" }
+      ]
+    },
+    {
+      "day": 21,
+      "sentence": "おやすみなさい。",
+      "translation": "晚安。",
+      "vocabulary": [
+        { "word": "おやすみ", "meaning": "晚安" }
+      ]
+    },
+    {
+      "day": 22,
+      "sentence": "私はコーヒーが飲みたいです。",
+      "translation": "我想喝咖啡。",
+      "vocabulary": [
+        { "word": "コーヒー", "meaning": "咖啡" },
+        { "word": "飲みたい", "meaning": "想喝" }
+      ]
+    },
+    {
+      "day": 23,
+      "sentence": "一緒に行きませんか？",
+      "translation": "要不要一起去？",
+      "vocabulary": [
+        { "word": "一緒に", "meaning": "一起" },
+        { "word": "行きませんか", "meaning": "不去嗎（邀請）" }
+      ]
+    },
+    {
+      "day": 24,
+      "sentence": "ごちそうさまでした。",
+      "translation": "多謝款待。",
+      "vocabulary": [
+        { "word": "ごちそうさま", "meaning": "多謝款待（用餐後用語）" }
+      ]
+    },
+    {
+      "day": 25,
+      "sentence": "日本語が上手ですね！",
+      "translation": "你的日文真好！",
+      "vocabulary": [
+        { "word": "上手", "meaning": "擅長、好" },
+        { "word": "日本語", "meaning": "日語" }
+      ]
+    },
+    {
+      "day": 26,
+      "sentence": "体に気をつけてください。",
+      "translation": "請保重身體。",
+      "vocabulary": [
+        { "word": "体", "meaning": "身體" },
+        { "word": "気をつけて", "meaning": "小心、注意" }
+      ]
+    },
+    {
+      "day": 27,
+      "sentence": "かわいいですね！",
+      "translation": "好可愛！",
+      "vocabulary": [
+        { "word": "かわいい", "meaning": "可愛的" }
+      ]
+    },
+    {
+      "day": 28,
+      "sentence": "これ、お願いします。",
+      "translation": "這個，麻煩你了。",
+      "vocabulary": [
+        { "word": "お願いします", "meaning": "麻煩您了" }
+      ]
+    },
+    {
+      "day": 29,
+      "sentence": "また今度、ご飯を食べに行きましょう。",
+      "translation": "下次一起去吃飯吧。",
+      "vocabulary": [
+        { "word": "今度", "meaning": "下次" },
+        { "word": "ご飯", "meaning": "飯、餐" }
+      ]
+    },
+    {
+      "day": 30,
+      "sentence": "ありがとうございます。",
+      "translation": "非常感謝。",
+      "vocabulary": [
+        { "word": "ありがとう", "meaning": "謝謝" }
+      ]
+    }
+  ]
+}
