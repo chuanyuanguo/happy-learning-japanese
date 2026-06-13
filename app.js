@@ -249,8 +249,8 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
 
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
-    const sentence = document.getElementById('sentence').textContent.replace(/[\s]/g, '');
-    const userText = transcript.replace(/[\s]/g, '');
+    const sentence = wanakana.toHiragana(document.getElementById('sentence').textContent).replace(/[\s]/g, '');
+    const userText = wanakana.toHiragana(transcript).replace(/[\s]/g, '');
 
     const resultBox = document.getElementById('recognition-result');
     resultBox.classList.remove('hidden');
