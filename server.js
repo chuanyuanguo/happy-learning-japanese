@@ -14,7 +14,7 @@ function loadApiKey() {
 const API_KEY = loadApiKey();
 
 const CACHE_FILE = path.join(__dirname, 'cache.json');
-const PORT = 8768;
+const PORT = process.env.PORT || 8768;
 
 const extMap = {
   '.html': 'text/html', '.js': 'application/javascript',
@@ -176,4 +176,4 @@ http.createServer((req, res) => {
   const ext = path.extname(fp);
   res.writeHead(200, { 'Content-Type': extMap[ext] || 'text/plain' });
   res.end(fs.readFileSync(fp));
-}).listen(PORT, '127.0.0.1', () => process.stdout.write(`Server running on http://127.0.0.1:${PORT}`));
+}).listen(PORT, '0.0.0.0', () => process.stdout.write(`Server running on http://0.0.0.0:${PORT}`));
