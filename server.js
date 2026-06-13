@@ -3,9 +3,15 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 
-const API_KEY = fs.readFileSync(path.join(__dirname, '.env'), 'utf8')
-  .split('\n').find(l => l.startsWith('OPENROUTER_API_KEY='))
-  ?.split('=')[1]?.trim();
+function loadApiKey() {
+  try {
+    const env = fs.readFileSync(path.join(__dirname, '.env'), 'utf8');
+    const k = env.split('\n').find(l => l.startsWith('OPENROUTER_API_KEY='));
+    if (k) return k.split('=')[1].trim();
+  } catch {}
+  return process.env.OPENROUTER_API_KEY || '';
+}
+const API_KEY = loadApiKey();
 
 const CACHE_FILE = path.join(__dirname, 'cache.json');
 const PORT = 8768;
