@@ -368,12 +368,33 @@ async function loadHistory() {
       const localDone = localKeys.filter(k => k.startsWith(`practice-${d.dayId}-`) && localStorage.getItem(k) === 'done').length;
       const localAgain = localKeys.filter(k => k.startsWith(`practice-${d.dayId}-`) && localStorage.getItem(k) === 'again').length;
 
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'btn btn-small btn-delete';
+      deleteBtn.textContent = '✕';
+      deleteBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!confirm('刪除此筆練習記錄？')) return;
+        await fetch(`/api/delete/${d.dayId}`, { method: 'DELETE' });
+        Array.from(document.querySelectorAll('.history-item')).find(el =>
+          el.querySelector('.history-date')?.textContent === dateStr &&
+          el.querySelector('.history-topic')?.textContent === d.topic
+        )?.remove();
+        const localKeys = Object.keys(localStorage).filter(k => k.startsWith('practice-'));
+        const totalDone = localKeys.filter(k => localStorage.getItem(k) === 'done').length;
+        document.getElementById('total-done').textContent = `總練習完成：${totalDone} 句`;
+        if (document.querySelectorAll('.history-item').length === 0) {
+          document.getElementById('history-list').innerHTML = '<p class="hint">尚無練習記錄</p>';
+        }
+        deleteBtn.remove();
+      });
+
       item.innerHTML = `
         <span class="history-date">${dateStr}</span>
         <span class="history-topic">${d.topic}</span>
         <span class="history-count">${d.count} 句</span>
         <span class="history-result">✅${localDone} 🔄${localAgain}</span>
       `;
+      item.appendChild(deleteBtn);
       item.addEventListener('click', () => {
         loadDayFromHistory(d.dayId);
       });

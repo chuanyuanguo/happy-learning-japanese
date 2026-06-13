@@ -117,6 +117,31 @@ http.createServer((req, res) => {
     return;
   }
 
+  if (pathname.startsWith('/api/delete/') && req.method === 'DELETE') {
+    const dayId = parseInt(pathname.split('/')[3]);
+    const cache = getCache();
+    const idx = cache.days.findIndex(d => d.dayId === dayId);
+    if (idx !== -1) {
+      const removed = cache.days.splice(idx, 1)[0];
+      (removed.sentences || []).forEach(s => {
+        const stillUsed = cache.days.some(d =>
+          (d.sentences || []).some(x => x.sentence === s.sentence)
+        );
+        if (!stillUsed) {
+          const si = cache.allSentences.indexOf(s.sentence);
+          if (si !== -1) cache.allSentences.splice(si, 1);
+        }
+      });
+      saveCache(cache);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true }));
+    } else {
+      res.writeHead(404);
+      res.end(JSON.stringify({ error: 'not found' }));
+    }
+    return;
+  }
+
   if (pathname === '/api/practice-save' && req.method === 'POST') {
     let body = '';
     req.on('data', c => body += c);
