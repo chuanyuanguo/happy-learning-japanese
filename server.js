@@ -37,7 +37,7 @@ async function generateContent(topic, count, usedSentences) {
       'HTTP-Referer': 'http://localhost:8768',
     },
     body: JSON.stringify({
-      model: 'openai/gpt-4o-mini',
+      model: 'openrouter/free',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.8,
       max_tokens: 3000,
