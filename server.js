@@ -13,26 +13,18 @@ function loadApiKey() {
 }
 const API_KEY = loadApiKey();
 
-const CACHE_FILE = path.join(__dirname, 'cache.json');
 const PORT = process.env.PORT || 8768;
+const MAX_REF_SENTENCES = parseInt(process.env.MAX_REF_SENTENCES) || 300;
 
 const extMap = {
   '.html': 'text/html', '.js': 'application/javascript',
   '.css': 'text/css', '.json': 'application/json', '.png': 'image/png',
 };
 
-function getCache() {
-  try { return JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8')); }
-  catch { return { allSentences: [] }; }
-}
-
-function saveCache(data) {
-  fs.writeFileSync(CACHE_FILE, JSON.stringify(data, null, 2));
-}
-
 async function generateContent(topic, count, usedSentences) {
-  const usedList = usedSentences.length > 0
-    ? `\n\nDO NOT repeat any of these sentences:\n${usedSentences.map(s => `- ${s}`).join('\n')}`
+  const refList = usedSentences.slice(-MAX_REF_SENTENCES);
+  const usedList = refList.length > 0
+    ? `\n\nDO NOT repeat any of these sentences:\n${refList.map(s => `- ${s}`).join('\n')}`
     : '';
 
   const prompt = `You are a Japanese teacher. Generate ${count} Japanese sentences for learning.\n\nTopic: ${topic}\nDifficulty: beginner level, use only simple Japanese\n${usedList}\n\nReturn ONLY valid JSON (no markdown, no code blocks):\n{\n  "sentences": [\n    {\n      "sentence": "Japanese sentence (hiragana and katakana ONLY, absolutely NO kanji)",\n      "translation": "Chinese translation",\n      "vocabulary": [\n        { "word": "key word in Japanese", "meaning": "Chinese meaning" },\n        { "word": "another word", "meaning": "Chinese meaning" }\n      ],\n      "grammar_tip": "short grammar explanation in Chinese"\n    }\n  ],\n  "theme": "topic name in Chinese"\n}\n\nRequirements:\n- Each sentence: natural daily Japanese, useful for conversation\n- Use ONLY hiragana and katakana, absolutely NO kanji\n- Each vocabulary: 1-2 words with Chinese meaning\n- Each sentence has a short grammar tip in Chinese\n- Sentences must be COMPLETELY different from the DO NOT repeat list\n- Vary sentence structures (questions, statements, commands)\n\nReturn at least ${count} sentences.`;
@@ -70,22 +62,15 @@ http.createServer((req, res) => {
   if (pathname === '/api/daily' && req.method === 'GET') {
     const topic = parsed.query.topic || '日常對話';
     const count = Math.min(Math.max(parseInt(parsed.query.count) || 5, 1), 20);
+    let used = [];
+    try { used = JSON.parse(decodeURIComponent(parsed.query.used || '[]')); } catch {}
 
     (async () => {
       try {
-        const cache = getCache();
-        const usedSentences = cache.allSentences || [];
-
-        const content = await generateContent(topic, count, usedSentences);
+        const content = await generateContent(topic, count, used);
 
         content.sentences = content.sentences.slice(0, count);
         const dayId = Date.now();
-        content.sentences.forEach(s => {
-          if (!cache.allSentences.includes(s.sentence)) {
-            cache.allSentences.push(s.sentence);
-          }
-        });
-        saveCache(cache);
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ dayId, theme: content.theme, sentences: content.sentences }));

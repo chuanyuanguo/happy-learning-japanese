@@ -47,6 +47,18 @@ function renderTopicSelector() {
   sel.value = '日常對話';
 }
 
+const USED_KEY = 'jp_used_sentences';
+const MAX_REF_KEY = 'jp_max_ref';
+
+function getUsedSentences() {
+  try { return JSON.parse(localStorage.getItem(USED_KEY)) || []; }
+  catch { return []; }
+}
+
+function saveUsedSentences(list) {
+  localStorage.setItem(USED_KEY, JSON.stringify(list));
+}
+
 async function generate() {
   const topic = document.getElementById('topic-select').value;
   const customTopic = document.getElementById('custom-topic').value.trim();
@@ -58,7 +70,9 @@ async function generate() {
   genBtn.disabled = true;
 
   try {
-    const res = await fetch(`/api/daily?topic=${encodeURIComponent(finalTopic)}&count=${count}`);
+    const used = getUsedSentences();
+    const usedParam = encodeURIComponent(JSON.stringify(used));
+    const res = await fetch(`/api/daily?topic=${encodeURIComponent(finalTopic)}&count=${count}&used=${usedParam}`);
     currentData = await res.json();
 
     if (currentData.error) {
@@ -77,6 +91,12 @@ async function generate() {
       sentences: currentData.sentences,
     });
     saveHistory(entries);
+
+    const newSentences = currentData.sentences.map(s => s.sentence);
+    used.push(...newSentences);
+    const maxRef = parseInt(localStorage.getItem(MAX_REF_KEY)) || 300;
+    if (used.length > maxRef) used.splice(0, used.length - maxRef);
+    saveUsedSentences(used);
 
     currentSentenceIndex = 0;
     renderDay();
