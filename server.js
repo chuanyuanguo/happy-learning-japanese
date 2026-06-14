@@ -23,7 +23,7 @@ const extMap = {
 
 function getCache() {
   try { return JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8')); }
-  catch { return { days: [], allSentences: [] }; }
+  catch { return { allSentences: [] }; }
 }
 
 function saveCache(data) {
@@ -80,8 +80,6 @@ http.createServer((req, res) => {
 
         content.sentences = content.sentences.slice(0, count);
         const dayId = Date.now();
-        const dayEntry = { dayId, topic, date: new Date().toISOString(), sentences: content.sentences };
-        cache.days.push(dayEntry);
         content.sentences.forEach(s => {
           if (!cache.allSentences.includes(s.sentence)) {
             cache.allSentences.push(s.sentence);
@@ -96,77 +94,6 @@ http.createServer((req, res) => {
         res.end(JSON.stringify({ error: e.message }));
       }
     })();
-    return;
-  }
-
-  if (pathname === '/api/history' && req.method === 'GET') {
-    const cache = getCache();
-    const days = cache.days.map(d => ({
-      dayId: d.dayId, topic: d.topic, date: d.date, count: d.sentences.length
-    }));
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(days.reverse()));
-    return;
-  }
-
-  if (pathname.startsWith('/api/load/') && req.method === 'GET') {
-    const dayId = parseInt(pathname.split('/')[3]);
-    const cache = getCache();
-    const day = cache.days.find(d => d.dayId === dayId);
-    if (day) {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ dayId: day.dayId, theme: day.topic, sentences: day.sentences }));
-    } else {
-      res.writeHead(404);
-      res.end(JSON.stringify({ error: 'not found' }));
-    }
-    return;
-  }
-
-  if (pathname.startsWith('/api/delete/') && req.method === 'DELETE') {
-    const dayId = parseInt(pathname.split('/')[3]);
-    const cache = getCache();
-    const idx = cache.days.findIndex(d => d.dayId === dayId);
-    if (idx !== -1) {
-      const removed = cache.days.splice(idx, 1)[0];
-      (removed.sentences || []).forEach(s => {
-        const stillUsed = cache.days.some(d =>
-          (d.sentences || []).some(x => x.sentence === s.sentence)
-        );
-        if (!stillUsed) {
-          const si = cache.allSentences.indexOf(s.sentence);
-          if (si !== -1) cache.allSentences.splice(si, 1);
-        }
-      });
-      saveCache(cache);
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ ok: true }));
-    } else {
-      res.writeHead(404);
-      res.end(JSON.stringify({ error: 'not found' }));
-    }
-    return;
-  }
-
-  if (pathname === '/api/practice-save' && req.method === 'POST') {
-    let body = '';
-    req.on('data', c => body += c);
-    req.on('end', () => {
-      try {
-        const data = JSON.parse(body);
-        const cache = getCache();
-        const day = cache.days.find(d => d.dayId === data.dayId);
-        if (day && day.sentences[data.index]) {
-          day.sentences[data.index].practiceResult = data.result;
-          saveCache(cache);
-        }
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ ok: true }));
-      } catch (e) {
-        res.writeHead(400);
-        res.end(JSON.stringify({ error: e.message }));
-      }
-    });
     return;
   }
 

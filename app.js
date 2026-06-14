@@ -9,6 +9,17 @@ const topics = [
   '音樂', '運動', '家庭', '朋友', '愛情', '夢想',
 ];
 
+const HISTORY_KEY = 'jp_history';
+
+function getHistory() {
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
+  catch { return []; }
+}
+
+function saveHistory(entries) {
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(entries));
+}
+
 function init() {
   renderTopicSelector();
   loadHistory();
@@ -54,6 +65,18 @@ async function generate() {
       document.getElementById('sentence').textContent = '⚠️ 產生失敗：' + currentData.error;
       return;
     }
+
+    currentData.theme = currentData.theme || finalTopic;
+
+    const entries = getHistory();
+    entries.unshift({
+      dayId: currentData.dayId,
+      topic: currentData.theme,
+      date: new Date().toISOString(),
+      count: currentData.sentences.length,
+      sentences: currentData.sentences,
+    });
+    saveHistory(entries);
 
     currentSentenceIndex = 0;
     renderDay();
@@ -342,79 +365,78 @@ function savePracticeResult(dayId, index, result) {
   localStorage.setItem(key, result);
 }
 
-async function loadHistory() {
-  try {
-    const res = await fetch('/api/history');
-    const days = await res.json();
-    const list = document.getElementById('history-list');
-    list.innerHTML = '';
+function loadHistory() {
+  const days = getHistory();
+  const list = document.getElementById('history-list');
+  list.innerHTML = '';
 
-    const localKeys = Object.keys(localStorage).filter(k => k.startsWith('practice-'));
-    const totalDone = localKeys.filter(k => localStorage.getItem(k) === 'done').length;
-    document.getElementById('total-done').textContent = `總練習完成：${totalDone} 句`;
+  const localKeys = Object.keys(localStorage).filter(k => k.startsWith('practice-'));
+  const totalDone = localKeys.filter(k => localStorage.getItem(k) === 'done').length;
+  document.getElementById('total-done').textContent = `總練習完成：${totalDone} 句`;
 
-    if (days.length === 0) {
-      list.innerHTML = '<p class="hint">尚無練習記錄</p>';
-      return;
-    }
-
-    days.forEach(d => {
-      const item = document.createElement('div');
-      item.className = 'history-item';
-
-      const date = new Date(d.date);
-      const dateStr = `${date.getMonth()+1}/${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2,'0')}`;
-
-      const localDone = localKeys.filter(k => k.startsWith(`practice-${d.dayId}-`) && localStorage.getItem(k) === 'done').length;
-      const localAgain = localKeys.filter(k => k.startsWith(`practice-${d.dayId}-`) && localStorage.getItem(k) === 'again').length;
-
-      const deleteBtn = document.createElement('button');
-      deleteBtn.className = 'btn btn-small btn-delete';
-      deleteBtn.textContent = '✕';
-      deleteBtn.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        if (!confirm('刪除此筆練習記錄？')) return;
-        await fetch(`/api/delete/${d.dayId}`, { method: 'DELETE' });
-        Array.from(document.querySelectorAll('.history-item')).find(el =>
-          el.querySelector('.history-date')?.textContent === dateStr &&
-          el.querySelector('.history-topic')?.textContent === d.topic
-        )?.remove();
-        const localKeys = Object.keys(localStorage).filter(k => k.startsWith('practice-'));
-        const totalDone = localKeys.filter(k => localStorage.getItem(k) === 'done').length;
-        document.getElementById('total-done').textContent = `總練習完成：${totalDone} 句`;
-        if (document.querySelectorAll('.history-item').length === 0) {
-          document.getElementById('history-list').innerHTML = '<p class="hint">尚無練習記錄</p>';
-        }
-        deleteBtn.remove();
-      });
-
-      item.innerHTML = `
-        <span class="history-date">${dateStr}</span>
-        <span class="history-topic">${d.topic}</span>
-        <span class="history-count">${d.count} 句</span>
-        <span class="history-result">✅${localDone} 🔄${localAgain}</span>
-      `;
-      item.appendChild(deleteBtn);
-      item.addEventListener('click', () => {
-        loadDayFromHistory(d.dayId);
-      });
-      list.appendChild(item);
-    });
-  } catch (e) {
-    console.log('History load failed');
+  if (days.length === 0) {
+    list.innerHTML = '<p class="hint">尚無練習記錄</p>';
+    return;
   }
+
+  days.forEach(d => {
+    const item = document.createElement('div');
+    item.className = 'history-item';
+
+    const date = new Date(d.date);
+    const dateStr = `${date.getMonth()+1}/${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2,'0')}`;
+
+    const localDone = localKeys.filter(k => k.startsWith(`practice-${d.dayId}-`) && localStorage.getItem(k) === 'done').length;
+    const localAgain = localKeys.filter(k => k.startsWith(`practice-${d.dayId}-`) && localStorage.getItem(k) === 'again').length;
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'btn btn-small btn-delete';
+    deleteBtn.textContent = '✕';
+    deleteBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!confirm('刪除此筆練習記錄？')) return;
+      const entries = getHistory();
+      const idx = entries.findIndex(e => e.dayId === d.dayId);
+      if (idx !== -1) entries.splice(idx, 1);
+      saveHistory(entries);
+      const keysToRemove = Object.keys(localStorage).filter(k => k.startsWith(`practice-${d.dayId}-`));
+      keysToRemove.forEach(k => localStorage.removeItem(k));
+      item.remove();
+      const remaining = getHistory();
+      const totalDone = Object.keys(localStorage).filter(k => k.startsWith('practice-') && localStorage.getItem(k) === 'done').length;
+      document.getElementById('total-done').textContent = `總練習完成：${totalDone} 句`;
+      if (remaining.length === 0) {
+        document.getElementById('history-list').innerHTML = '<p class="hint">尚無練習記錄</p>';
+      }
+    });
+
+    item.innerHTML = `
+      <span class="history-date">${dateStr}</span>
+      <span class="history-topic">${d.topic}</span>
+      <span class="history-count">${d.count} 句</span>
+      <span class="history-result">✅${localDone} 🔄${localAgain}</span>
+    `;
+    item.appendChild(deleteBtn);
+    item.addEventListener('click', () => {
+      loadDayFromHistory(d.dayId);
+    });
+    list.appendChild(item);
+  });
 }
 
-async function loadDayFromHistory(dayId) {
-  try {
-    const res = await fetch(`/api/load/${dayId}`);
-    currentData = await res.json();
-    if (currentData.error) return;
-    currentSentenceIndex = 0;
-    renderDay();
-    document.getElementById('history-area').classList.add('hidden');
-    document.getElementById('result-area').classList.remove('hidden');
-  } catch (e) {}
+function loadDayFromHistory(dayId) {
+  const entries = getHistory();
+  const entry = entries.find(e => e.dayId === dayId);
+  if (!entry) return;
+  currentData = {
+    dayId: entry.dayId,
+    theme: entry.topic,
+    sentences: entry.sentences,
+  };
+  currentSentenceIndex = 0;
+  renderDay();
+  document.getElementById('history-area').classList.add('hidden');
+  document.getElementById('result-area').classList.remove('hidden');
 }
 
 function toggleHistory() {
